@@ -9,9 +9,9 @@ using Newtonsoft.Json;
 
 namespace TwitAnalyzer
 {
-    public static class Function1
+    public static class TwitAnalyzer
     {
-        [FunctionName("Function1")]
+        [FunctionName("TwitAnalyzer")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
