@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
 using Elasticsearch.Net;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using TwitAnalyzer.Application.Implementations;
 using TwitAnalyzer.Application.Interfaces;
+using TwitAnalyzer.Implementations;
+using TwitAnalyzer.Interfaces;
 
 [assembly: FunctionsStartup(typeof(TwitAnalyzer.Startup))]
 
@@ -28,6 +32,22 @@ namespace TwitAnalyzer
             });
 
             builder.Services.AddSingleton<ITwitIndexer, ElasticTwitIndexer>();
+            builder.Services.AddSingleton<IIndexerSettings>(sp => new Settings(GetConfiguration()));
+        }
+
+        private static IConfiguration GetConfiguration()
+        {
+            var appConfiguration = new ConfigurationBuilder()
+#if DEBUG
+                .SetBasePath(Directory.GetCurrentDirectory())
+#else
+                .SetBasePath(Environment.ExpandEnvironmentVariables(@"%home%\site\wwwroot"))
+#endif
+                .AddJsonFile("application.settings.json", false)
+                .AddEnvironmentVariables()
+                .Build();
+
+            return appConfiguration;
         }
     }
 }
