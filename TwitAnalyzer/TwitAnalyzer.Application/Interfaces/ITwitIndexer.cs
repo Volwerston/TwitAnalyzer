@@ -5,6 +5,6 @@ namespace TwitAnalyzer.Application.Interfaces
 {
     public interface ITwitIndexer
     {
-        Task Index(Twit twit, string index);
+        Task Index(TwitAnalysisResult twit, string index);
     }
 }

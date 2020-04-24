@@ -4,6 +4,7 @@ using Elasticsearch.Net;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using nBayes;
 using Nest;
 using TwitAnalyzer.Application.Implementations;
 using TwitAnalyzer.Application.Interfaces;
@@ -33,6 +34,9 @@ namespace TwitAnalyzer
 
             builder.Services.AddSingleton<ITwitIndexer, ElasticTwitIndexer>();
             builder.Services.AddSingleton<IIndexerSettings>(sp => new Settings(GetConfiguration()));
+
+            var bayesAnalyzer = BayesAnalyzer.GetTrained("bayes-dataset.csv");
+            builder.Services.AddSingleton(bayesAnalyzer);
         }
 
         private static IConfiguration GetConfiguration()

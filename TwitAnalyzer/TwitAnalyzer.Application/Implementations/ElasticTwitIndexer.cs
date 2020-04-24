@@ -14,7 +14,7 @@ namespace TwitAnalyzer.Application.Implementations
             _elasticClient = elasticClient;
         }
 
-        public Task Index(Twit twit, string index)
+        public Task Index(TwitAnalysisResult twit, string index)
             => _elasticClient.IndexAsync(twit, idx => idx.Index(index));
     }
 }

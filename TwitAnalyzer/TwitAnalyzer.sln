@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitAnalyzer.Domain", "Twit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitAnalyzer.Application", "TwitAnalyzer.Application\TwitAnalyzer.Application.csproj", "{16F79294-68B0-4764-95DC-6833C9B699A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaiveBayesAnalyzer", "NaiveBayesAnalyzer\NaiveBayesAnalyzer.csproj", "{1B231755-744F-4CF5-9CD9-D3EA51D9EC02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{16F79294-68B0-4764-95DC-6833C9B699A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F79294-68B0-4764-95DC-6833C9B699A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F79294-68B0-4764-95DC-6833C9B699A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B231755-744F-4CF5-9CD9-D3EA51D9EC02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B231755-744F-4CF5-9CD9-D3EA51D9EC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B231755-744F-4CF5-9CD9-D3EA51D9EC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B231755-744F-4CF5-9CD9-D3EA51D9EC02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{CE8251ED-EC8A-462B-992C-12EC3D395CC7} = {53B3A429-90C6-4171-A410-9DE84A002A4F}
 		{F4E87F8B-87DA-408F-BE5C-CEA6708E8471} = {20F45118-208F-4B66-BB57-2AB999507C40}
 		{16F79294-68B0-4764-95DC-6833C9B699A9} = {0D0D54B2-E26F-4B4B-A41E-33C7A85DCD79}
+		{1B231755-744F-4CF5-9CD9-D3EA51D9EC02} = {0D0D54B2-E26F-4B4B-A41E-33C7A85DCD79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA2B728A-6546-417C-A1A2-A66E78AB4F20}

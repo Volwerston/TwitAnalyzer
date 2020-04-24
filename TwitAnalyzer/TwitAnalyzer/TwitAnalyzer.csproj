@@ -8,9 +8,16 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NaiveBayesAnalyzer\NaiveBayesAnalyzer.csproj" />
     <ProjectReference Include="..\TwitAnalyzer.Application\TwitAnalyzer.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="application.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="bayes-dataset.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
