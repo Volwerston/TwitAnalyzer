@@ -37,6 +37,9 @@ namespace TwitAnalyzer
 
             var bayesAnalyzer = BayesAnalyzer.GetTrained("bayes-dataset.csv");
             builder.Services.AddSingleton(bayesAnalyzer);
+
+            var machineLearningAnalyzer = MachineLearningAnalyzer.MachineLearningAnalyzer.GetTrained("bayes-dataset.csv");
+            builder.Services.AddSingleton(machineLearningAnalyzer);
         }
 
         private static IConfiguration GetConfiguration()

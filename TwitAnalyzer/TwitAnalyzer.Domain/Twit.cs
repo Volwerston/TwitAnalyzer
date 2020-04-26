@@ -23,5 +23,15 @@
         public string Text { get; set; }
         public float PositiveProbability { get; set; }
         public CategorizationResult CategorizationResult { get; set; }
+
+        public static CategorizationResult Categorize(float probability, float Tolerance = 0.05f)
+        {
+            if (probability <= .5f - Tolerance)
+                return CategorizationResult.Negative;
+
+            return probability >= .5 + Tolerance
+                ? CategorizationResult.Positive
+                : CategorizationResult.Undetermined;
+        }
     }
 }

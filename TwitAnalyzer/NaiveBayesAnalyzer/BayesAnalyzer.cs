@@ -16,11 +16,7 @@ namespace nBayes
         {
             _positive = positive;
             _negative = negative;
-
-            Tolerance = .05f;
         }
-
-        public float Tolerance { get; set; }
 
         public static BayesAnalyzer GetTrained(string dataSetPath)
         {
@@ -57,7 +53,6 @@ namespace nBayes
 
         public Task<TwitAnalyzerResult> Analyze(Twit twit)
         {
-            var result = Categorize(Entry.FromString(twit.Text));
             var probability = GetPrediction(Entry.FromString(twit.Text));
 
             return Task.FromResult(
@@ -66,23 +61,11 @@ namespace nBayes
                     Algorithm = "bayes",
                     TwitAnalysisResult = new TwitAnalysisResult
                     {
-                        CategorizationResult = result,
+                        CategorizationResult = TwitAnalysisResult.Categorize(probability),
                         PositiveProbability = probability,
                         Text = twit.Text
                     }
                 });
-        }
-
-        public CategorizationResult Categorize(Entry item)
-        {
-            var prediction = GetPrediction(item);
-
-            if (prediction <= .5f - Tolerance)
-                return CategorizationResult.Negative;
-
-            return prediction >= .5 + Tolerance 
-                ? CategorizationResult.Positive 
-                : CategorizationResult.Undetermined;
         }
 
         public float GetPrediction(Entry item)
