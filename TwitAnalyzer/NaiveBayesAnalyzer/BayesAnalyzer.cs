@@ -18,12 +18,15 @@ namespace nBayes
             _negative = negative;
         }
 
-        public static BayesAnalyzer GetTrained(string dataSetPath)
+        public static BayesAnalyzer GetTrained(string dataSet)
         {
             var positive = Index.CreateMemoryIndex();
             var negative = Index.CreateMemoryIndex();
 
-            using (var fs = new FileStream(dataSetPath, FileMode.Open))
+
+            var ms = new MemoryStream();
+
+            using (var fs = GenerateStreamFromString(dataSet))
             {
                 using (var sr = new StreamReader(fs))
                 {
@@ -118,5 +121,15 @@ namespace nBayes
         }
 
         #endregion
+
+        private static Stream GenerateStreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
     }
 }

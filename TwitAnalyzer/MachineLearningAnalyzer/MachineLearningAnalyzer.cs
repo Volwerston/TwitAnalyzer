@@ -68,11 +68,11 @@ namespace MachineLearningAnalyzer
             return model;
         }
 
-        private static IReadOnlyCollection<SentimentData> LoadTestData(string dataSetPath)
+        private static IReadOnlyCollection<SentimentData> LoadTestData(string dataSet)
         {
             var testData = new List<SentimentData>();
 
-            using (var fs = new FileStream(dataSetPath, FileMode.Open))
+            using (var fs = GenerateStreamFromString(dataSet))
             {
                 using (var sr = new StreamReader(fs))
                 {
@@ -106,6 +106,16 @@ namespace MachineLearningAnalyzer
             }
 
             return testData;
+        }
+
+        private static Stream GenerateStreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
     }
 }
