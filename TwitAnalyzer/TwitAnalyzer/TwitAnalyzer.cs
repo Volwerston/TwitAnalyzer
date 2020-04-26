@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using MachineLearningAnalyzer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -18,18 +19,18 @@ namespace TwitAnalyzer
         private readonly ITwitIndexer _twitIndexer;
         private readonly IIndexerSettings _settings;
         private readonly BayesAnalyzer _bayesAnalyzer;
-        private readonly MachineLearningAnalyzer.MachineLearningAnalyzer _machineLearningAnalyzer;
+        private readonly MachineLearningAnalyzer<LinearRegressionEstimatorProvider> _linearRegressionAnalyzer;
 
         public TwitAnalyzer(
-            ITwitIndexer twitIndexer, 
+            ITwitIndexer twitIndexer,
             IIndexerSettings settings,
             BayesAnalyzer bayesAnalyzer,
-            MachineLearningAnalyzer.MachineLearningAnalyzer mlAnalyzer)
+            MachineLearningAnalyzer<LinearRegressionEstimatorProvider> linearRegressionAnalyzer)
         {
             _twitIndexer = twitIndexer;
             _settings = settings;
             _bayesAnalyzer = bayesAnalyzer;
-            _machineLearningAnalyzer = mlAnalyzer;
+            _linearRegressionAnalyzer = linearRegressionAnalyzer;
         }
 
         [FunctionName("TwitAnalyzer")]
@@ -38,22 +39,22 @@ namespace TwitAnalyzer
             ILogger logger)
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            
+
             var twit = new Twit { Text = requestBody };
 
             var bayesAnalysisResult = await _bayesAnalyzer.Analyze(twit);
             logger.LogInformation($"Naive Bayes probability: '{bayesAnalysisResult.TwitAnalysisResult.PositiveProbability}'");
 
             await _twitIndexer.Index(
-                bayesAnalysisResult.TwitAnalysisResult, 
+                bayesAnalysisResult.TwitAnalysisResult,
                 GetIndexName(_settings.Tag, bayesAnalysisResult.Algorithm));
 
-            var machineLearningAnalysisResult = await _machineLearningAnalyzer.Analyze(twit);
-            logger.LogInformation($"ML probability: '{machineLearningAnalysisResult.TwitAnalysisResult.PositiveProbability}'");
+            var linearRegressionAnalysisResult = await _linearRegressionAnalyzer.Analyze(twit);
+            logger.LogInformation($"Linear regression probability: '{linearRegressionAnalysisResult.TwitAnalysisResult.PositiveProbability}'");
 
             await _twitIndexer.Index(
-                machineLearningAnalysisResult.TwitAnalysisResult,
-                GetIndexName(_settings.Tag, machineLearningAnalysisResult.Algorithm));
+                linearRegressionAnalysisResult.TwitAnalysisResult,
+                GetIndexName(_settings.Tag, linearRegressionAnalysisResult.Algorithm));
 
             return new OkObjectResult("Twit processed successfully");
         }

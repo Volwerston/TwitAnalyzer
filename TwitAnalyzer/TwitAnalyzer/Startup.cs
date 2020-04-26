@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Elasticsearch.Net;
+using MachineLearningAnalyzer;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,8 +39,15 @@ namespace TwitAnalyzer
             var bayesAnalyzer = BayesAnalyzer.GetTrained("bayes-dataset.csv");
             builder.Services.AddSingleton(bayesAnalyzer);
 
-            var machineLearningAnalyzer = MachineLearningAnalyzer.MachineLearningAnalyzer.GetTrained("bayes-dataset.csv");
-            builder.Services.AddSingleton(machineLearningAnalyzer);
+            var linearSvmAnalyzer = MachineLearningAnalyzer<LinearSvmEstimatorProvider>
+                .GetTrained("bayes-dataset.csv");
+
+            builder.Services.AddSingleton(linearSvmAnalyzer);
+
+            var linearRegressionAnalyzer = MachineLearningAnalyzer<LinearRegressionEstimatorProvider>
+                .GetTrained("bayes-dataset.csv");
+
+            builder.Services.AddSingleton(linearRegressionAnalyzer);
         }
 
         private static IConfiguration GetConfiguration()

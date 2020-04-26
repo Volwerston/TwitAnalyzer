@@ -6,28 +6,33 @@ using TwitAnalyzer.Domain;
 
 namespace MachineLearningAnalyzer
 {
-    public class MachineLearningAnalyzer : ITwitAnalyzer
+    public class MachineLearningAnalyzer<TEstimatorProvider>: ITwitAnalyzer
+        where TEstimatorProvider : IEstimatorProvider, new()
     {
         private readonly MLContext _mlContext;
         private readonly ITransformer _model;
+        private readonly string _estimationAlgorithm;
 
-        internal MachineLearningAnalyzer(MLContext mlContext, ITransformer model)
+        internal MachineLearningAnalyzer(MLContext mlContext, ITransformer model, string estimationAlgorithm)
         {
             _mlContext = mlContext;
             _model = model;
+            _estimationAlgorithm = estimationAlgorithm;
         }
 
-        public static MachineLearningAnalyzer GetTrained(string dataSetPath)
+        public static MachineLearningAnalyzer<TEstimatorProvider> GetTrained(string dataSetPath)
         {
+            var estimatorProvider = new TEstimatorProvider();
+
             var mlContext = new MLContext();
 
             var testData = LoadTestData(dataSetPath);
 
             var dataView = mlContext.Data.LoadFromEnumerable(testData);
 
-            var model = BuildAndTrainModel(mlContext, dataView);
+            var model = BuildAndTrainModel(mlContext, dataView, estimatorProvider);
 
-            return new MachineLearningAnalyzer(mlContext, model);
+            return new MachineLearningAnalyzer<TEstimatorProvider>(mlContext, model, estimatorProvider.Name);
         }
 
         public Task<TwitAnalyzerResult> Analyze(Twit twit)
@@ -44,7 +49,7 @@ namespace MachineLearningAnalyzer
             return Task.FromResult(
                 new TwitAnalyzerResult
                 {
-                    Algorithm = "ml",
+                    Algorithm = _estimationAlgorithm,
                     TwitAnalysisResult = new TwitAnalysisResult
                     {
                         CategorizationResult = TwitAnalysisResult.Categorize(prediction.Probability),
@@ -54,12 +59,11 @@ namespace MachineLearningAnalyzer
                 });
         }
 
-        private static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView splitTrainSet)
+        private static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView trainSet, IEstimatorProvider estimatorProvider)
         {
-            var estimator = mlContext.Transforms.Text.FeaturizeText("Features", nameof(SentimentData.Text))
-                .Append(mlContext.BinaryClassification.Trainers.SdcaLogisticRegression());
+            var estimator = estimatorProvider.GetEstimator(mlContext);
 
-            var model = estimator.Fit(splitTrainSet);
+            var model = estimator.Fit(trainSet);
 
             return model;
         }
