@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using TwitAnalyzer.Domain;
 
@@ -66,7 +67,8 @@ namespace nBayes
                     {
                         CategorizationResult = TwitAnalysisResult.Categorize(probability),
                         PositiveProbability = probability,
-                        Text = twit.Text
+                        Text = twit.Text,
+                        TimestampUtc = DateTime.UtcNow
                     }
                 });
         }

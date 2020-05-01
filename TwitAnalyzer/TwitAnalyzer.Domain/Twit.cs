@@ -1,4 +1,6 @@
-﻿namespace TwitAnalyzer.Domain
+﻿using System;
+
+namespace TwitAnalyzer.Domain
 {
     public enum CategorizationResult
     {
@@ -23,6 +25,7 @@
         public string Text { get; set; }
         public float PositiveProbability { get; set; }
         public CategorizationResult CategorizationResult { get; set; }
+        public DateTime TimestampUtc { get; set; }
 
         public static CategorizationResult Categorize(float probability, float Tolerance = 0.05f)
         {
