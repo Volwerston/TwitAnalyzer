@@ -20,17 +20,20 @@ namespace TwitAnalyzer
         private readonly IIndexerSettings _settings;
         private readonly BayesAnalyzer _bayesAnalyzer;
         private readonly MachineLearningAnalyzer<LinearRegressionEstimatorProvider> _linearRegressionAnalyzer;
+        private readonly MachineLearningAnalyzer<RandomForestEstimatorProvider> _randomForestAnalyzer;
 
         public TwitAnalyzer(
             ITwitIndexer twitIndexer,
             IIndexerSettings settings,
             BayesAnalyzer bayesAnalyzer,
-            MachineLearningAnalyzer<LinearRegressionEstimatorProvider> linearRegressionAnalyzer)
+            MachineLearningAnalyzer<LinearRegressionEstimatorProvider> linearRegressionAnalyzer,
+            MachineLearningAnalyzer<RandomForestEstimatorProvider> randomForestAnalyzer)
         {
             _twitIndexer = twitIndexer;
             _settings = settings;
             _bayesAnalyzer = bayesAnalyzer;
             _linearRegressionAnalyzer = linearRegressionAnalyzer;
+            _randomForestAnalyzer = randomForestAnalyzer;
         }
 
         [FunctionName("TwitAnalyzer")]
@@ -50,11 +53,18 @@ namespace TwitAnalyzer
                 GetIndexName(_settings.Tag, bayesAnalysisResult.Algorithm));
 
             var linearRegressionAnalysisResult = await _linearRegressionAnalyzer.Analyze(twit);
-            logger.LogInformation($"Linear regression probability: '{linearRegressionAnalysisResult.TwitAnalysisResult.PositiveProbability}'");
+            logger.LogInformation($"Linear SVM probability: '{linearRegressionAnalysisResult.TwitAnalysisResult.PositiveProbability}'");
 
             await _twitIndexer.Index(
                 linearRegressionAnalysisResult.TwitAnalysisResult,
                 GetIndexName(_settings.Tag, linearRegressionAnalysisResult.Algorithm));
+
+            var randomForestAnalysisResult = await _randomForestAnalyzer.Analyze(twit);
+            logger.LogError($"Random forest probability: '{linearRegressionAnalysisResult.TwitAnalysisResult.PositiveProbability}'");
+
+            await _twitIndexer.Index(
+                randomForestAnalysisResult.TwitAnalysisResult,
+                GetIndexName(_settings.Tag, randomForestAnalysisResult.Algorithm));
 
             return new OkObjectResult("Twit processed successfully");
         }

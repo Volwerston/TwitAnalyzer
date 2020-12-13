@@ -54,6 +54,11 @@ namespace TwitAnalyzer
                 .GetTrained(dataSetBlob);
 
             builder.Services.AddSingleton(linearRegressionAnalyzer);
+
+            var randomForestAnalyzer = MachineLearningAnalyzer<RandomForestEstimatorProvider>
+                .GetTrained(dataSetBlob);
+
+            builder.Services.AddSingleton(randomForestAnalyzer);
         }
 
         private static IConfiguration GetConfiguration()
